@@ -1,153 +1,48 @@
-const player = document.getElementById("player");
-const obstacle = document.getElementById("obstacle");
-const upBtn = document.getElementById("up-btn");
-const downBtn = document.getElementById("down-btn");
-const score = document.getElementById("score");
-
-let playerY = 225;
-let obstacleX = 400;
-let playerSpeed = 10;
-let obstacleSpeed = 5;
-let gameScore = 0;
-let gameInterval;
-
-function movePlayerUp() {
-  playerY -= playerSpeed;
-  if (playerY < 0) {
-    playerY = 0;
-  }
-  player.style.top = playerY + "px";
-}
-
-function movePlayerDown() {
-  playerY += playerSpeed;
-  if (playerY > 450) {
-    playerY = 450;
-  }
-  player.style.top = playerY +
-
-function moveObstacle() {
-    obstacleX -= obstacleSpeed;
-    if (obstacleX < 0) {
-      obstacleX = 400;
-      gameScore += 1;
-      score.textContent = gameScore;
-    }
-    obstacle.style.left = obstacleX + "px";
-  }
-  
-  function checkCollision() {
-    const playerRect = player.getBoundingClientRect();
-    const obstacleRect = obstacle.getBoundingClientRect();
-    return !(
-      playerRect.bottom < obstacleRect.top ||
-      playerRect.top > obstacleRect.bottom ||
-      playerRect.right < obstacleRect.left ||
-      playerRect.left > obstacleRect.right
-    );
-  }
-  
-  function gameOver() {
-    clearInterval(gameInterval);
-    alert("게임 오버! 다시 시작하세요.");
-    location.reload();
-  }
-  
-  function gameLoop() {
-    if (checkCollision()) {
-      gameOver();
-    } else {
-      moveObstacle();
-    }
-  }
-
-  // 게임 시작 버튼 이벤트 핸들러
-startButton.addEventListener('click', () => {
-    // 게임 시작 상태를 true로 변경
-    isGameStarted = true;
-  
-    // 게임 시작 버튼 숨기기
-    startButton.style.display = 'none';
-  
-    // 장애물 생성 함수 반복 실행
-    obstacleIntervalId = setInterval(createObstacle, 1000);
-  
-    // 시간 측정 함수 반복 실행
-    timerIntervalId = setInterval(() => {
-      timeLeft -= 1;
-      timer.textContent = `Time left: ${timeLeft}s`;
-  
-      // 남은 시간이 0이 되면 게임 종료
-      if (timeLeft === 0) {
-        clearInterval(obstacleIntervalId);
-        clearInterval(timerIntervalId);
-        endGame();
-      }
-    }, 1000);
-  });
-  
-  upBtn.addEventListener("click", movePlayerUp);
-  downBtn.addEventListener("click", movePlayerDown);
-  
-  gameInterval = setInterval(gameLoop, 50);
-  let gameInterval;
-let gameScore = 0;
-let playerY = 200;
-let obstacleX = 400;
-const obstacleSpeed = 5;
-const obstacleGap = 120; // 장애물 사이 간격
-const minObstacleY = 50; // 장애물이 내려오는 최소 Y 좌표
-const maxObstacleY = 310; // 장애물이 내려오는 최대 Y 좌표
-const timeLimit = 120; // 게임 시간 제한 (초)
-let timeRemaining = timeLimit;
-
-const player = document.querySelector(".player");
+// 장애물과 시작 버튼 요소 선택
 const obstacle = document.querySelector(".obstacle");
-const upBtn = document.querySelector("#up-btn");
-const downBtn = document.querySelector("#down-btn");
-const startBtn = document.querySelector("#start-btn");
-const score = document.querySelector("#score");
-const timeRemainingElem = document.querySelector("#time-remaining");
+const startBtn = document.querySelector(".start-btn");
 
-function movePlayerUp() {
-  if (playerY > 0) {
-    playerY -= 10;
-    player.style.top = playerY + "px";
-  }
+// 시작 버튼 클릭 시 게임 시작
+startBtn.addEventListener("click", startGame);
+
+function startGame() {
+  // 장애물 랜덤 위치 설정
+  obstacle.style.left = Math.random() * 80 + "%";
+
+  // 게임 종료 시간 설정 (2분 후)
+  const endTime = new Date().getTime() + 120000;
+
+  // 게임 진행
+  const gameInterval = setInterval(function() {
+    // 현재 시간 계산
+    const currentTime = new Date().getTime();
+
+    // 남은 시간 계산
+    const remainingTime = endTime - currentTime;
+
+    // 시간이 남아있으면 장애물 내리기
+    if (remainingTime > 0) {
+      const obstacleTop = parseInt(getComputedStyle(obstacle).top);
+      obstacle.style.top = obstacleTop + 5 + "px";
+      
+      // 장애물이 바닥에 닿으면 게임 종료
+      if (obstacleTop > 95) {
+        clearInterval(gameInterval);
+        alert("Game Over");
+      }
+      
+      // 장애물과 버튼이 겹치면 게임 종료
+      const buttonRect = startBtn.getBoundingClientRect();
+      const obstacleRect = obstacle.getBoundingClientRect();
+      if (buttonRect.bottom > obstacleRect.top && buttonRect.top < obstacleRect.bottom && buttonRect.right > obstacleRect.left && buttonRect.left < obstacleRect.right) {
+        clearInterval(gameInterval);
+        alert("Game Over");
+      }
+    } 
+    // 시간이 다 되면 게임 종료
+    else {
+      clearInterval(gameInterval);
+      alert("Game Over");
+    }
+  }, 10);
 }
-
-function movePlayerDown() {
-  if (playerY < 360) {
-    playerY += 10;
-    player.style.top = playerY + "px";
-  }
-}
-
-function moveObstacle() {
-  obstacleX -= obstacleSpeed;
-  if (obstacleX < -40) {
-    obstacleX = 400;
-    const obstacleY =
-      Math.floor(Math.random() * (maxObstacleY - minObstacleY + 1)) +
-      minObstacleY;
-    obstacle.style.top = obstacleY + "px";
-    gameScore += 1;
-    score.textContent = gameScore;
-  }
-  obstacle.style.left = obstacleX + "px";
-}
-
-function checkCollision() {
-  const playerRect = player.getBoundingClientRect();
-  const obstacleRect = obstacle.getBoundingClientRect();
-  return !(
-    playerRect.bottom < obstacleRect.top ||
-    playerRect.top > obstacleRect.bottom ||
-    playerRect.right < obstacleRect.left ||
-    playerRect.left > obstacleRect.right
-  );
-}
-
-function gameOver()
-
-  

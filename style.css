@@ -1,0 +1,50 @@
+body {
+    background-color: #e6e6e6;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  #score {
+    text-align: center;
+    font-size: 24px;
+  }
+  
+  #player {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: blue;
+    left: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  #obstacle {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    left: 400px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  button {
+    display: block;
+    margin: 0 auto;
+    width: 100px;
+    height: 50px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  button:focus {
+    outline: none;
+    background-color: #3e8e41;
+  }
+  

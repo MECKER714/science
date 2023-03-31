@@ -60,6 +60,31 @@ function moveObstacle() {
       moveObstacle();
     }
   }
+
+  // 게임 시작 버튼 이벤트 핸들러
+startButton.addEventListener('click', () => {
+    // 게임 시작 상태를 true로 변경
+    isGameStarted = true;
+  
+    // 게임 시작 버튼 숨기기
+    startButton.style.display = 'none';
+  
+    // 장애물 생성 함수 반복 실행
+    obstacleIntervalId = setInterval(createObstacle, 1000);
+  
+    // 시간 측정 함수 반복 실행
+    timerIntervalId = setInterval(() => {
+      timeLeft -= 1;
+      timer.textContent = `Time left: ${timeLeft}s`;
+  
+      // 남은 시간이 0이 되면 게임 종료
+      if (timeLeft === 0) {
+        clearInterval(obstacleIntervalId);
+        clearInterval(timerIntervalId);
+        endGame();
+      }
+    }, 1000);
+  });
   
   upBtn.addEventListener("click", movePlayerUp);
   downBtn.addEventListener("click", movePlayerDown);
